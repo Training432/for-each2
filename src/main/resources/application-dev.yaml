@@ -1,0 +1,9 @@
+http:
+  host: "localhost"
+  port : "8087"
+  
+httprequest:
+    host : "localhost"
+    port :  "8082"
+    path : "test"
+      

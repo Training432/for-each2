@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="3be3f1c8-1f11-4d3c-8f6e-21d1be0c3530" >
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="a9fc1282-7d9b-4980-a68d-0ed125935e3a" >
+		<http:request-connection host="${httprequest.host}" port="${httprequest.port}" />
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="9a9184f2-aead-4b4e-9ef8-b5ba50fef3fc" file="application-${mule.env}.properties" />
+	<flow name="for-each-appFlow" doc:id="cbc2968d-9890-4351-80be-740ebb97082b" >
+		<http:listener doc:name="Listener" doc:id="6275349c-4c71-470b-8737-9e2d3e153f8d" config-ref="HTTP_Listener_config" path="/for-each/*" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="47799758-3055-4e96-b433-edeb25134559" message="Request started :: #[payload]"/>
+		<http:request method="POST" doc:name="Request" doc:id="6f481349-bd5a-4d59-83e2-f6e01ce9d2a5" config-ref="HTTP_Request_configuration" path="${httprequest.path}" />
+		<logger level="INFO" doc:name="Logger" doc:id="0da223fe-49db-418b-b549-7b17e754d3d6" message="sample app payload :: #[payload]" />
+		<ee:transform doc:name="Transform Message" doc:id="9f0a0a53-053f-445b-88e3-52dd5b68e2e3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
